@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Voicify - Text to Speech Converter by Soham{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Transform Text to Natural Speech</h1>
+            <p class="hero-subtitle">Powered by advanced AI technology</p>
+            <a href="#converter" class="cta-button">Try it now</a>
+        </div>
+    </div>
+</div>
+
+<div class="container main-content">
+    <section id="converter" class="converter-section">
+        <div class="section-header">
+            <h2>Text to Speech Converter</h2>
+            <p>Convert your text into natural-sounding speech in seconds</p>
+        </div>
+        
+        <div class="card converter-card">
+            <div class="form-group">
+                <label for="voice-select">Select Voice</label>
+                <div class="select-wrapper">
+                    <select id="voice-select" class="voice-select">
+                        <option value="loading">Loading voices...</option>
+                    </select>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="text-input">Enter Text</label>
+                <textarea id="text-input" placeholder="Type or paste your text here..." rows="6"></textarea>
+                <div class="text-controls">
+                    <span id="char-count">0 characters</span>
+                    <button id="clear-btn" class="text-control-btn">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+            
+            <div class="voice-settings">
+                <h3>Voice Settings</h3>
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label for="stability">Stability</label>
+                        <div class="range-container">
+                            <input type="range" id="stability" min="0" max="1" step="0.1" value="0.5">
+                            <span id="stability-value">0.5</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="clarity">Clarity</label>
+                        <div class="range-container">
+                            <input type="range" id="clarity" min="0" max="1" step="0.1" value="0.5">
+                            <span id="clarity-value">0.5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="generate-btn" class="primary-btn">
+                    <i class="fas fa-play"></i> Generate Speech
+                </button>
+            </div>
+        </div>
+        
+        <div class="card audio-card" id="audio-container" style="display: none;">
+            <h2><i class="fas fa-headphones"></i> Generated Audio</h2>
+            <div class="audio-player">
+                <audio id="audio-player" controls></audio>
+            </div>
+            <div class="audio-controls">
+                <button id="download-btn" class="secondary-btn">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+        </div>
+        
+        <div id="loading-indicator" class="loading-indicator" style="display: none;">
+            <div class="spinner"></div>
+            <p>Generating speech...</p>
+        </div>
+    </section>
+    
+    <section class="features-preview">
+        <div class="section-header">
+            <h2>Key Features</h2>
+            <p>Discover what makes our text-to-speech converter special</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-microphone-alt"></i>
+                </div>
+                <h3>Natural Voices</h3>
+                <p>Our AI generates incredibly natural-sounding speech that's almost indistinguishable from human voices.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3>Multiple Languages</h3>
+                <p>Support for various languages and accents to meet your global needs.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+                <h3>Customizable</h3>
+                <p>Adjust voice settings like stability and clarity to get the perfect sound for your project.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Fast Processing</h3>
+                <p>Get your audio in seconds with our high-performance backend processing.</p>
+            </div>
+        </div>
+        
+        <div class="features-cta">
+            <a href="/features" class="secondary-btn">Explore All Features</a>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Update character count
+    const textInput = document.getElementById('text-input');
+    const charCount = document.getElementById('char-count');
+    
+    textInput.addEventListener('input', function() {
+        const count = this.value.length;
+        charCount.textContent = count + (count === 1 ? ' character' : ' characters');
+    });
+    
+    // Update slider values
+    const stabilitySlider = document.getElementById('stability');
+    const stabilityValue = document.getElementById('stability-value');
+    const claritySlider = document.getElementById('clarity');
+    const clarityValue = document.getElementById('clarity-value');
+    
+    stabilitySlider.addEventListener('input', function() {
+        stabilityValue.textContent = this.value;
+    });
+    
+    claritySlider.addEventListener('input', function() {
+        clarityValue.textContent = this.value;
+    });
+</script>
+{% endblock %}

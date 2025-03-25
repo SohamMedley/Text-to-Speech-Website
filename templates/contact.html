@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - Voicify by Soham{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>Get in touch with us</p>
+    </div>
+</div>
+
+<div class="container main-content">
+    <section class="contact-section">
+        <div class="contact-grid">
+            <div class="contact-form-container">
+                <div class="card">
+                    <h2>Send us a message</h2>
+<br>
+                    <form id="contact-form" class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="Enter subject">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" placeholder="Enter your message" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="primary-btn">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="contact-info">
+                <div class="card">
+                    <h2>Contact Information</h2>
+<br>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Address</h3>
+                            <p>Mumbai, India</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Email</h3>
+                            <p>businessbysoham@gmail.com<br>codingbysoham@gmail.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Phone</h3>
+                            <p>+91 832 901 4831</p>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <h3>Follow Us</h3>
+                        <div class="social-icons">
+                            <a href="x.com/codingbysoham" class="social-icon"><i class="fab fa-twitter"></i></a>
+                            <a href="facebook.com/codingbysoham" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                            <a href="instagram.com/codingbysoham" class="social-icon"><i class="fab fa-instagram"></i></a>
+                            <a href="linkdein.com/SohamDharap" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card map-card">
+                    <h3>Our Location</h3>
+                    <div class="map-container">
+                        <!-- Placeholder for a map -->
+                        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Map location" class="map-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>How does the text-to-speech technology work?</h3>
+                    <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                </div>
+                <div class="faq-answer">
+                    <p>Our text-to-speech technology uses advanced AI models to analyze text and generate natural-sounding speech. The system understands context, emphasis, and can even convey emotions through the generated audio.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>What file formats are supported for download?</h3>
+                    <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                </div>
+                <div class="faq-answer">
+                    <p>Currently, we support MP3 format for all generated audio. This ensures compatibility with virtually all devices and platforms.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Is there a limit to how much text I can convert?</h3>
+                    <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                </div>
+                <div class="faq-answer">
+                    <p>The free version allows up to 500 characters per conversion. Premium plans offer higher limits and additional features.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Can I use the generated audio for commercial purposes?</h3>
+                    <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, with our premium plans, you can use the generated audio for commercial purposes, including podcasts, videos, and applications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // FAQ Toggle
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        const answer = item.querySelector('.faq-answer');
+        const toggle = item.querySelector('.faq-toggle');
+        
+        question.addEventListener('click', () => {
+            faqItems.forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('active');
+                    otherItem.querySelector('.faq-answer').style.maxHeight = null;
+                    otherItem.querySelector('.faq-toggle i').className = 'fas fa-plus';
+                }
+            });
+            
+            item.classList.toggle('active');
+            
+            if (item.classList.contains('active')) {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                toggle.querySelector('i').className = 'fas fa-minus';
+            } else {
+                answer.style.maxHeight = null;
+                toggle.querySelector('i').className = 'fas fa-plus';
+            }
+        });
+    });
+    
+    // Form submission (just for demo)
+    const contactForm = document.getElementById('contact-form');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! This is a demo form, so no message was actually sent.');
+            this.reset();
+        });
+    }
+</script>
+{% endblock %}

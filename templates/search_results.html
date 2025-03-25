@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results - VoiceGenius{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Search Results</h1>
+        <p>Results for: "{{ query }}"</p>
+    </div>
+</div>
+
+<div class="container main-content">
+    <section class="search-results-section">
+        <div class="search-info">
+            <p>Showing results for <strong>"{{ query }}"</strong></p>
+        </div>
+        
+        <div class="results-container">
+            <!-- This would be dynamically generated in a real application -->
+            <div class="result-item">
+                <h3><a href="/">Text to Speech Converter</a></h3>
+                <p>Convert your text into natural-sounding speech with our advanced AI technology.</p>
+                <div class="result-meta">
+                    <span><i class="fas fa-tag"></i> Feature</span>
+                </div>
+            </div>
+            
+            <div class="result-item">
+                <h3><a href="/features">Voice Customization</a></h3>
+                <p>Learn how to customize voice settings like stability and clarity for the perfect sound.</p>
+                <div class="result-meta">
+                    <span><i class="fas fa-tag"></i> Feature</span>
+                </div>
+            </div>
+            
+            <div class="result-item">
+                <h3><a href="/about">About Our Technology</a></h3>
+                <p>Discover the advanced AI technology behind our text-to-speech conversion.</p>
+                <div class="result-meta">
+                    <span><i class="fas fa-tag"></i> About</span>
+                </div>
+            </div>
+            
+            <div class="no-results" style="display: none;">
+                <p>No results found for <strong>"{{ query }}"</strong>.</p>
+                <p>Try different keywords or check out our <a href="/features">features page</a> to learn more about VoiceGenius.</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
