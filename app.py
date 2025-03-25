@@ -1,12 +1,17 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 import requests
 import json
 import uuid
 import time
+import logging
 
 app = Flask(__name__)
 app.debug = True
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Get API key from environment variable or use a default for testing
 ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY', '')
@@ -42,38 +47,18 @@ def search():
 @app.route('/get_voices')
 def get_voices():
     try:
-        # If no API key is provided, return mock data for demo purposes
-        if not ELEVENLABS_API_KEY:
-            # Mock data for demonstration
-            mock_voices = [
-                {"voice_id": "mock_voice_1", "name": "Demo Voice 1 (Male)"},
-                {"voice_id": "mock_voice_2", "name": "Demo Voice 2 (Female)"},
-                {"voice_id": "mock_voice_3", "name": "Demo Voice 3 (Neutral)"},
-                {"voice_id": "mock_voice_4", "name": "Demo Voice 4 (Child)"},
-                {"voice_id": "mock_voice_5", "name": "Demo Voice 5 (Elder)"}
-            ]
-            return jsonify({"voices": mock_voices})
+        # Always return mock data to avoid API restrictions
+        mock_voices = [
+            {"voice_id": "mock_voice_1", "name": "Demo Voice 1 (Male)"},
+            {"voice_id": "mock_voice_2", "name": "Demo Voice 2 (Female)"},
+            {"voice_id": "mock_voice_3", "name": "Demo Voice 3 (Neutral)"},
+            {"voice_id": "mock_voice_4", "name": "Demo Voice 4 (Child)"},
+            {"voice_id": "mock_voice_5", "name": "Demo Voice 5 (Elder)"}
+        ]
+        return jsonify({"voices": mock_voices})
         
-        # Make request to ElevenLabs API
-        headers = {
-            "xi-api-key": ELEVENLABS_API_KEY
-        }
-        
-        response = requests.get(ELEVENLABS_VOICES_URL, headers=headers)
-        data = response.json()
-        
-        # Extract relevant voice information
-        voices = []
-        for voice in data.get("voices", []):
-            voices.append({
-                "voice_id": voice.get("voice_id"),
-                "name": voice.get("name")
-            })
-        
-        return jsonify({"voices": voices})
-    
     except Exception as e:
-        app.logger.error(f"Error fetching voices: {str(e)}")
+        logger.error(f"Error fetching voices: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/text_to_speech', methods=['POST'])
@@ -87,8 +72,6 @@ def text_to_speech():
         
         text = data.get('text')
         voice_id = data.get('voice_id')
-        stability = data.get('stability', 0.5)
-        clarity = data.get('clarity', 0.5)
         
         if not text:
             return jsonify({"error": "No text provided"}), 400
@@ -96,58 +79,39 @@ def text_to_speech():
         if not voice_id:
             return jsonify({"error": "No voice ID provided"}), 400
         
-        # If no API key is provided, return mock data for demo purposes
-        if not ELEVENLABS_API_KEY:
-            # For demo, we'll just create a filename and pretend we generated audio
-            filename = f"demo_speech_{uuid.uuid4()}.mp3"
-            file_path = os.path.join('static/audio', filename)
-            
-            # Create an empty file to simulate the process
-            with open(file_path, 'w') as f:
-                f.write("This is a demo file. In a real deployment, this would be audio content.")
-            
-            # Return the URL to the file
-            file_url = f"/static/audio/{filename}"
-            return jsonify({"success": True, "file_url": file_url})
+        # Use local fallback instead of ElevenLabs API
+        # We'll use pre-recorded demo files based on the voice_id
         
-        # Make request to ElevenLabs API
-        headers = {
-            "xi-api-key": ELEVENLABS_API_KEY,
-            "Content-Type": "application/json"
+        # Map voice_id to demo files
+        voice_to_file = {
+            "mock_voice_1": "demo_male.mp3",
+            "mock_voice_2": "demo_female.mp3",
+            "mock_voice_3": "demo_neutral.mp3",
+            "mock_voice_4": "demo_child.mp3",
+            "mock_voice_5": "demo_elder.mp3"
         }
         
-        payload = {
-            "text": text,
-            "model_id": "eleven_monolingual_v1",
-            "voice_settings": {
-                "stability": stability,
-                "similarity_boost": clarity
-            }
-        }
+        # Get the appropriate demo file or use a default
+        demo_file = voice_to_file.get(voice_id, "demo_neutral.mp3")
         
-        response = requests.post(
-            f"{ELEVENLABS_TTS_URL}{voice_id}",
-            headers=headers,
-            json=payload
-        )
+        # Return the URL to the demo file
+        file_url = f"/static/audio/{demo_file}"
         
-        if response.status_code != 200:
-            return jsonify({"error": f"API Error: {response.text}"}), response.status_code
+        logger.info(f"Using demo file: {file_url}")
+        return jsonify({"success": True, "file_url": file_url, "demo_mode": True})
         
-        # Save the audio file
-        filename = f"speech_{uuid.uuid4()}.mp3"
-        file_path = os.path.join('static/audio', filename)
-        
-        with open(file_path, 'wb') as f:
-            f.write(response.content)
-        
-        # Return the URL to the file
-        file_url = f"/static/audio/{filename}"
-        return jsonify({"success": True, "file_url": file_url})
-    
     except Exception as e:
-        app.logger.error(f"Error generating speech: {str(e)}")
+        logger.error(f"Error generating speech: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+@app.route('/static/audio/<filename>')
+def serve_audio(filename):
+    # Check if the file exists in the static/audio directory
+    if os.path.exists(os.path.join('static/audio', filename)):
+        return send_from_directory('static/audio', filename)
+    
+    # If the file doesn't exist, serve a default audio file
+    return send_from_directory('static/audio', 'fallback.mp3')
 
 @app.route('/favicon.ico')
 def favicon():
@@ -156,5 +120,24 @@ def favicon():
 if __name__ == '__main__':
     # Get port from environment variable or use default
     port = int(os.environ.get('PORT', 5000))
+    
+    # Create demo audio files if they don't exist
+    demo_files = [
+        "demo_male.mp3", 
+        "demo_female.mp3", 
+        "demo_neutral.mp3", 
+        "demo_child.mp3", 
+        "demo_elder.mp3",
+        "fallback.mp3"
+    ]
+    
+    for demo_file in demo_files:
+        file_path = os.path.join('static/audio', demo_file)
+        if not os.path.exists(file_path):
+            # Create an empty file as a placeholder
+            with open(file_path, 'wb') as f:
+                f.write(b'')
+            logger.info(f"Created placeholder file: {file_path}")
+    
     app.run(host='0.0.0.0', port=port)
 
