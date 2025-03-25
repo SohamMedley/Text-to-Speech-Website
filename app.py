@@ -8,7 +8,7 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # The API key should be stored as an environment variable in production
 # For this example, I'll use a placeholder - replace with your actual key securely
-ELEVENLABS_API_KEY = "sk_d61331b18dbdfada80e60045b92ad267a09e95c1f94a5bb6"  # Replace with environment variable in production
+ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY', 'your-default-key')
 
 @app.route('/')
 def index():
