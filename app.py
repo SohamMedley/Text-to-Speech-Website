@@ -96,7 +96,4 @@ if __name__ == '__main__':
     
     # Define the port variable from environment (Render sets it dynamically)
     port = int(os.environ.get('PORT', 5000))
-
     app.run(host='0.0.0.0', port=port)
-
-print("Flask Text-to-Speech application is ready to run!")
