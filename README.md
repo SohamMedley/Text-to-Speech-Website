@@ -1,80 +1,95 @@
-Voicify - Text to Speech Converter by Soham
-Voicify is a web application that transforms text into natural-sounding speech using advanced AI powered by the ElevenLabs API. The project uses Flask for the backend along with HTML, CSS, and JavaScript for a responsive and user-friendly frontend.
+<div align="center">
+  
+# 🎙️ Voicify by Soham 🎙️
 
-Features
-Text-to-Speech Conversion: Convert your text to natural speech in seconds.
+<img src="https://i.imgur.com/pB0j6NL.gif" alt="Voicify Logo Animation" width="500px"/>
 
-Voice Customization: Choose from multiple voices and adjust settings like stability and clarity.
+### *Transform Text into Stunning Natural Speech with AI*
 
-Audio Download: Download the generated speech as an MP3 file.
+[![Made with Python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg?style=for-the-badge&logo=python)](https://www.python.org/)
+[![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![ElevenLabs](https://img.shields.io/badge/Powered%20by-ElevenLabs-9933CC?style=for-the-badge)](https://elevenlabs.io/)
 
-Responsive UI: Enjoy a seamless experience across devices.
+<a href="#demo">Demo</a> •
+<a href="#features">Features</a> •
+<a href="#installation">Installation</a> •
+<a href="#usage">Usage</a> •
+<a href="#tech-stack">Tech Stack</a> •
+<a href="#contributing">Contributing</a>
 
-Search & Navigation: Built-in pages including Home, Features, About, and Contact.
+</div>
 
-Prerequisites
-Python 3.x
+---
 
-pip
+## 🌟 Overview
 
-Installation and Running Locally
-Clone the repository:
+**Voicify** is a cutting-edge text-to-speech web application that transforms written text into incredibly natural-sounding speech using advanced AI technology. Perfect for content creators, developers, educators, and anyone who needs high-quality voice synthesis.
 
-bash
-Copy
-Edit
-git clone https://github.com/SohamMedley/Text-to-Speech-Website.git
-Navigate to the project folder:
+<div align="center">
+  <img src="https://i.imgur.com/JvEezmS.gif" alt="Text to Speech Animation" width="700px"/>
+</div>
 
-vbnet
-Copy
-Edit
-cd Text-to-Speech-Website
-Install required packages:
+## ✨ Features
 
-nginx
-Copy
-Edit
-pip install flask requests
-Run the application:
+<table>
+  <tr>
+    <td width="50%">
+      <h3 align="center">🎭 Natural-Sounding Voices</h3>
+      <p align="center">
+        <img src="https://i.imgur.com/8wEGOJQ.gif" alt="Natural Voices" width="300px"/>
+      </p>
+      <p align="center">AI-powered voices that sound remarkably human with proper intonation, emphasis, and natural pauses.</p>
+    </td>
+    <td width="50%">
+      <h3 align="center">🎛️ Customizable Settings</h3>
+      <p align="center">
+        <img src="https://i.imgur.com/pQFI58l.gif" alt="Customizable Settings" width="300px"/>
+      </p>
+      <p align="center">Fine-tune stability and clarity to create the perfect voice for your specific needs.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3 align="center">🌍 Multiple Languages</h3>
+      <p align="center">
+        <img src="https://i.imgur.com/JYwNqYg.gif" alt="Multiple Languages" width="300px"/>
+      </p>
+      <p align="center">Support for various languages and accents to reach a global audience.</p>
+    </td>
+    <td width="50%">
+      <h3 align="center">⚡ Fast Processing</h3>
+      <p align="center">
+        <img src="https://i.imgur.com/Q5CoNsb.gif" alt="Fast Processing" width="300px"/>
+      </p>
+      <p align="center">Get your audio files quickly with our high-performance backend.</p>
+    </td>
+  </tr>
+</table>
 
-nginx
-Copy
-Edit
-python app.py
-The app will be available at http://127.0.0.1:5000/.
+## 🚀 Demo
 
-Deployment on Render
-To deploy Voicify on Render, use the following guidelines when filling out the web service configuration:
+<div align="center">
+  <img src="https://i.imgur.com/XYZ123.gif" alt="Voicify Demo" width="800px"/>
+  
+  [Live Demo](https://voicify-demo.example.com) • [Video Tutorial](https://youtube.com/example)
+</div>
 
-Name:
-Set a unique name for your web service, for example:
-Text-to-Speech-Website
+## 📋 Installation
 
-Project:
-Optionally add this web service to a project if you have one.
+<details>
+<summary>Click to expand installation instructions</summary>
 
-Language:
-Change the language from "Node" to Python since this is a Flask application.
+### Prerequisites
 
-Branch:
-Set the branch to deploy (e.g., main).
+- Python 3.8+
+- Flask
+- ElevenLabs API key
 
-Region:
-Choose a region that best fits your needs (e.g., Singapore for Southeast Asia or Oregon for US West).
+### Step 1: Clone the repository
 
-Root Directory (Optional):
-Leave blank if your project is in the repository root.
+```bash
+git clone https://github.com/yourusername/voicify.git
+cd voicify
 
-Build Command:
-Python projects usually do not require a build step, so you can leave this empty unless you have custom build steps.
-
-Start Command:
-Set this to:
-
-nginx
-Copy
-Edit
-python app.py
-Instance Type:
-Choose based on your project needs (for hobby projects you can select the Free tier).
