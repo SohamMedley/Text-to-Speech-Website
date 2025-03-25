@@ -48,9 +48,9 @@ def get_voices():
 
 @app.route('/text_to_speech', methods=['POST'])
 def text_to_speech():
-    data = request.json
-    text = data.get('text', '')
-    voice_id = data.get('voice_id', 'EXAVITQu4vr4xnSDxMaL')  # Default voice
+    request_data = request.json
+    text = request_data.get('text', '')
+    voice_id = request_data.get('voice_id', 'EXAVITQu4vr4xnSDxMaL')  # Default voice
     
     if not text:
         return jsonify({"error": "No text provided"}), 400
@@ -63,7 +63,7 @@ def text_to_speech():
         "xi-api-key": ELEVENLABS_API_KEY
     }
     
-    data = {
+    payload = {
         "text": text,
         "model_id": "eleven_monolingual_v1",
         "voice_settings": {
@@ -72,7 +72,7 @@ def text_to_speech():
         }
     }
     
-    response = requests.post(url, json=data, headers=headers)
+    response = requests.post(url, json=payload, headers=headers)
     
     if response.status_code == 200:
         # Generate a unique filename based on timestamp
