@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Current audio URL for download
   let currentAudioUrl = ""
+  let currentAudioBlob = null
 
   // Initialize sliders if they exist
   if (stabilitySlider && stabilityValue) {
@@ -114,6 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     generateBtn.disabled = true
 
     try {
+      // First try the server API
       const response = await fetch("/text_to_speech", {
         method: "POST",
         headers: {
@@ -129,7 +131,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json()
 
-      if (data.success && data.file_url) {
+      if (data.success) {
+        // If we're in demo mode and the server returned a demo file URL
+        if (data.demo_mode) {
+          // Use Web Speech API as a fallback
+          generateSpeechWithWebAPI(text, voiceId)
+          return
+        }
+
         // Hide loading indicator
         loadingIndicator.style.display = "none"
         generateBtn.disabled = false
@@ -151,7 +160,130 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (error) {
       console.error("Error generating speech:", error)
-      showNotification(error.message || "Error generating speech", "error")
+
+      // Fallback to Web Speech API
+      generateSpeechWithWebAPI(text, voiceId)
+    }
+  }
+
+  function generateSpeechWithWebAPI(text, voiceId) {
+    // Check if browser supports speech synthesis
+    if ("speechSynthesis" in window) {
+      // Create a new SpeechSynthesisUtterance instance
+      const utterance = new SpeechSynthesisUtterance(text)
+
+      // Get available voices
+      let voices = window.speechSynthesis.getVoices()
+
+      // If voices aren't loaded yet, wait for them
+      if (voices.length === 0) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          voices = window.speechSynthesis.getVoices()
+          setVoiceAndSpeak()
+        }
+      } else {
+        setVoiceAndSpeak()
+      }
+
+      function setVoiceAndSpeak() {
+        // Map the mock voice ID to a voice type
+        let voiceIndex = 0
+
+        switch (voiceId) {
+          case "mock_voice_1": // Male
+            // Find a male voice
+            for (let i = 0; i < voices.length; i++) {
+              if (voices[i].name.toLowerCase().includes("male")) {
+                voiceIndex = i
+                break
+              }
+            }
+            break
+          case "mock_voice_2": // Female
+            // Find a female voice
+            for (let i = 0; i < voices.length; i++) {
+              if (voices[i].name.toLowerCase().includes("female")) {
+                voiceIndex = i
+                break
+              }
+            }
+            break
+          case "mock_voice_4": // Child
+            // Try to find a higher pitched voice
+            utterance.pitch = 1.5
+            utterance.rate = 1.1
+            break
+          case "mock_voice_5": // Elder
+            // Try to find a slower, deeper voice
+            utterance.pitch = 0.8
+            utterance.rate = 0.8
+            break
+          default:
+            // Use default voice
+            break
+        }
+
+        // Set the voice
+        if (voices.length > voiceIndex) {
+          utterance.voice = voices[voiceIndex]
+        }
+
+        // Create a MediaRecorder to capture the audio
+        const audioChunks = []
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+        const destination = audioContext.createMediaStreamDestination()
+        const mediaRecorder = new MediaRecorder(destination.stream)
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            audioChunks.push(e.data)
+          }
+        }
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: "audio/mp3" })
+          const audioUrl = URL.createObjectURL(audioBlob)
+
+          // Hide loading indicator
+          loadingIndicator.style.display = "none"
+          generateBtn.disabled = false
+
+          // Set audio source and show player
+          audioPlayer.src = audioUrl
+          audioContainer.style.display = "block"
+
+          // Store blob and URL for download
+          currentAudioBlob = audioBlob
+          currentAudioUrl = audioUrl
+
+          // Scroll to audio player
+          audioContainer.scrollIntoView({ behavior: "smooth" })
+
+          // Play audio
+          audioPlayer.play()
+        }
+
+        // Start recording
+        mediaRecorder.start()
+
+        // Speak the text
+        window.speechSynthesis.speak(utterance)
+
+        // When speech is done, stop recording
+        utterance.onend = () => {
+          mediaRecorder.stop()
+        }
+
+        // Fallback in case onend doesn't fire
+        setTimeout(() => {
+          if (mediaRecorder.state === "recording") {
+            mediaRecorder.stop()
+          }
+        }, text.length * 100) // Rough estimate of speech duration
+      }
+    } else {
+      // Browser doesn't support speech synthesis
+      showNotification("Your browser does not support text-to-speech", "error")
       loadingIndicator.style.display = "none"
       generateBtn.disabled = false
     }
@@ -163,14 +295,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function downloadAudio() {
-    if (!currentAudioUrl) return
-
-    const link = document.createElement("a")
-    link.href = currentAudioUrl
-    link.download = "speech_" + Date.now() + ".mp3"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    if (currentAudioBlob) {
+      // If we have a blob (from Web Speech API), use that
+      const link = document.createElement("a")
+      link.href = currentAudioUrl
+      link.download = "speech_" + Date.now() + ".mp3"
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } else if (currentAudioUrl) {
+      // Otherwise use the URL from the server
+      const link = document.createElement("a")
+      link.href = currentAudioUrl
+      link.download = "speech_" + Date.now() + ".mp3"
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
   }
 
   function showNotification(message, type = "info") {
